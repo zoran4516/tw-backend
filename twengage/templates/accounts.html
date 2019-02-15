@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Matter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" type="text/css">
+    <link href="https://cdn.datatables.net/1.10.19/css/dataTables.foundation.min.css" type="text/css">
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" type="text/css">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Buttons/2.0.0/css/buttons.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Buttons/2.0.0/js/buttons.min.js"></script>
+    <!-- <link rel="stylesheet" href="{% static 'css/custom.css' %}"> -->
+</head>
+
+<body>
+        <h2 class="text-center">Twitter Accounts</h2>
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">Accounts</h1>
+                <a href="/start/all/" class="button button-caution button-jumbo">Start All Accounts</a>
+                <a href="/start/active/" class="button button-caution button-jumbo">Start All Active Accounts</a>
+                <a href="/start/inactive/" class="button button-caution button-jumbo">Start All Inactive Accounts</a>
+            </div>
+        </div>        
+        <table id="accounts-table" class="results table table-striped table-bordered" style="width:100%">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Action</th>
+                    <th>User Id</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Verified</th>
+                    <th>Active</th>
+                    <th>Current Hashtag</th>
+                    <th>Hashtags</th>
+                    <th>Current Following Account</th>
+                    <th>Accounts to Follow</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for each_account in accounts %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td><a target="_blank" href="https://twitter.com/{{each_account.username}}">{{each_account.username}}</a></td>
+                    <td>{{each_account.password}}</td>
+                    <td><a href="/start/{{each_account.username}}/" class="button button-caution button-jumbo">Start</a></td>
+                    <td>{{each_account.user_id}}</td>
+                    <td>{{each_account.email}}</td>
+                    <td>{{each_account.phone_number}}</td>
+                    <td>{{each_account.user_verified}}</td>
+                    <td>{{each_account.user_active}}</td>
+                    <td>{{each_account.current_hashtag}}</td>
+                    <td>{{each_account.hashtags}}</td>
+                    <td>{{each_account.current_following_account}}</td>
+                    <td>{{each_account.follow_accounts}}</td>
+                    <td>{{each_account.notes}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    <script src="{% static 'js/custom.js' %}" type="text/javascript"></script>
+</body>
+</html>
