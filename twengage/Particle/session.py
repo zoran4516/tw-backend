@@ -214,7 +214,8 @@ class Session(object):
         return login_data
     #
     def prepare_logout(self):        
-        logout_data = {}
+        self.d = {}
+        logout_data = self.d
         authenticity_token = self.get_authenticity_token()
         logout_data["headers"] = {
                                     "X-Requested-With": "XMLHttpRequest",
@@ -230,7 +231,7 @@ class Session(object):
     def is_logged_in(self):
         # Try loading the accounts page in settings, if the url matches, then return True
         settings_page = self.requests_manager.session.get(self.settings_url)
-        print(settings_page)
+        #print(settings_page)
         print(settings_page.url)
         if settings_page.url == self.settings_url:
             print("{} is logged in".format(self.account_obj.username))
@@ -242,7 +243,7 @@ class Session(object):
             self.account_obj.save()    
             print("Minimizing window in 2s")
             time.sleep(2)
-            ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 6) 
+            #ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 6)
             # Setting Bearer Token
             return True
         return False

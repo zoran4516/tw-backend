@@ -90,15 +90,24 @@ class Hashtags(object):
     def get_hashtags(self, hashtag, max_position=None):
         if not max_position:
             max_position = self.get_max_data_position(hashtag)
-        data = self.prepare_data(hashtag)     
+        print("=================Data Part===============")
+        data = self.prepare_data(hashtag)
+        print(data)
+        print("================End Data Part====================")
         url = self.get_hashtags_url.format(hashtag, max_position)
         # print(max_position)
+        print("----------URL part======================")
         print(url)
         hashtags_resp = self.requests_manager.make_request(url, headers=data["headers"])
+        print("----------Hashtags resp output part======================")
         print(hashtags_resp)
+        print("----------End Hashtags resp output part======================")
         # print(str(hashtags_resp.json()).encode())
         if hashtags_resp.status_code == 200:
             hashtags_json = hashtags_resp.json()
+            print("----------This is hash tag json part======================")
+            print(hashtags_json);
+            print("----------End This is hash tag json part======================")
             hashtags = self.parse_hashtags(hashtags_json)
             return hashtags
         return []   

@@ -27,6 +27,8 @@ class Followers(object):
     def initialize(self):
         self.home_url = Configuration.home_url
         self.get_followers_url = Configuration.get_followers_url
+        self.get_followers_url_0 = Configuration.get_followers_url_0
+        self.m_mode = 0
         return None
     #
     def parse_followers(self, followers_json):
@@ -35,13 +37,14 @@ class Followers(object):
         followers_html = followers_json.get("items_html")
         followers_xml  = lxml.html.fromstring(followers_html + "<p></p>")
         followers_elms = followers_xml.xpath('//div[contains(@class, "ProfileCard") and @data-user-id]')
-        followers["min_position"] = followers_json["min_position"]
+        if self.m_mode == 1:
+            followers["min_position"] = followers_json["min_position"]
         for follower in followers_elms:
             you_follow = True
             if follower.xpath('.//div[contains(@class, "not-following")]'):
                 you_follow = False
-            else:
-                print("Already following this user")
+            #else:
+            #    print("Already following this user")
             followers["followers"].append({
                 "user_id" : follower.attrib.get("data-user-id"),
                 "username" : follower.attrib.get("data-screen-name"),
@@ -56,12 +59,18 @@ class Followers(object):
                     "Referer": "https://twitter.com/{}".format(username),
                     }
         url = self.home_url + "/" + str(username) + "/followers"
+        print("Min_Postion_URL",url)
         min_position_resp = self.requests_manager.make_request(url, headers=headers)
-        print(min_position_resp)
-        print(min_position_resp.url)
+        #print(min_position_resp)
+        print("Respond_URL",min_position_resp.url)
         import pprint
         pprint.pprint(dict(min_position_resp.request.headers))
         min_position_json = min_position_resp.json()
+
+        #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        #print(min_position_json)
+        #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+
         min_position_xml = lxml.html.fromstring(min_position_json["page"])
         min_position = min_position_xml.xpath_first('//div/@data-min-position')
         print("Min Position for pagination of Followers of {} is {}".format(username, min_position))
@@ -76,11 +85,22 @@ class Followers(object):
                             }
         return data
     #
-    def get_followers(self, username, min_position=None):
-        if not min_position:
-            min_position = self.get_min_position(username)
-        data = self.prepare_data(username)     
-        url = self.get_followers_url.format(username, min_position)
+    def get_followers(self, username, minPositionInput=None, mode=0):
+        data = self.prepare_data(username)
+        self.m_mode = mode
+
+        if mode == 1:
+            if not minPositionInput :
+                min_position = self.get_min_position(username)
+            else :
+                min_position = minPositionInput
+            if min_position == 0:
+                return []
+            url = self.get_followers_url.format(username, min_position)
+
+        else:
+            url = self.get_followers_url_0.format(username)
+
         followers_resp = self.requests_manager.make_request(url, headers=data["headers"])
         print(followers_resp)
         if followers_resp.status_code == 200:

@@ -22,7 +22,10 @@ class Account(models.Model):
     follow = models.BooleanField("Follow ?", default=True)
     notes = models.TextField("Notes", max_length = 3000, default=None, blank=True, null=True)
 
-
+    org_following_users = models.TextField("Original Following Users", default=None, blank=True, null=True)
+    follower_users = models.TextField("Follower Users", default=None, blank=True, null=True)
+    following_cnt = models.BigIntegerField("Original Following Count", default=0)
+    follower_cnt = models.BigIntegerField("Follower Count", default=0)
 
 class Stat(models.Model):
     def __str__(self):

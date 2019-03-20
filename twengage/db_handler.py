@@ -14,7 +14,29 @@ django.setup()
 
 from twengage.models import Account, Stat
 
+def save_followings(userNameInput, followings):
+    record = Account.objects.get(username=userNameInput)
+    record.org_following_users = ""
+    for following in followings :
+        if record.org_following_users.find(following) == -1:
+            record.org_following_users += (following + ' ')
 
+    record.following_cnt=len(followings)
+    record.save()
+
+def save_followers(userNameInput, followers):
+    record = Account.objects.get(username=userNameInput)
+    record.follower_users = ""
+    for follower in followers :
+        if record.follower_users.find(follower) == -1:
+            record.follower_users += (follower + ' ')
+    record.follower_cnt=len(followers)
+    record.save()
+
+def set_userActive(userNameInput, value):
+    record = Account.objects.get(username=userNameInput)
+    record.user_active = value
+    record.save()
 
 def all_accounts():
     return Account.objects.all()

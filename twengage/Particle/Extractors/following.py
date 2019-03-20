@@ -22,11 +22,13 @@ class Following(object):
     def __init__(self, requests_manager):
         self.requests_manager = requests_manager
         self.initialize()
+        self.m_mode = 0
         return None
     #
     def initialize(self):
         self.home_url = Configuration.home_url
         self.get_following_url = Configuration.get_following_url
+        self.get_following_url_0 = Configuration.get_following_url_0
         return None
     #
     def parse_following(self, following_json):
@@ -35,13 +37,14 @@ class Following(object):
         following_html = following_json.get("items_html")
         following_xml  = lxml.html.fromstring(following_html  + "<p></p>")
         following_elms = following_xml.xpath('//div[contains(@class, "ProfileCard") and @data-user-id]')
-        following["min_position"] = following_json["min_position"]
+        if self.m_mode == 1:
+            following["min_position"] = following_json["min_position"]
         for follower in following_elms:
             you_follow = True
             if follower.xpath('.//div[contains(@class, "not-following")]'):
                 you_follow = False
-            else:
-                print("Already following this user")
+           # else:
+           #     print("Already following this user")
             following["following"].append({
                 "user_id" : follower.attrib.get("data-user-id"),
                 "username" : follower.attrib.get("data-screen-name"),
@@ -57,10 +60,10 @@ class Following(object):
                     }
         url = self.home_url + "/" + str(username) + "/following"
         min_position_resp = self.requests_manager.make_request(url, headers=headers)
-        print(min_position_resp)
-        print(min_position_resp.url)
-        import pprint
-        pprint.pprint(dict(min_position_resp.request.headers))
+        #print(min_position_resp)
+        #print(min_position_resp.url)
+        #import pprint
+        #pprint.pprint(dict(min_position_resp.request.headers))
         min_position_json = min_position_resp.json()
         min_position_xml = lxml.html.fromstring(min_position_json["page"])
         min_position = min_position_xml.xpath_first('//div/@data-min-position')
@@ -72,19 +75,38 @@ class Following(object):
         data["headers"] = {
                             "Accept": "application/json, text/javascript, */*; q=0.01",
                             "X-Twitter-Active-User": "yes",
+                            "X-Requested-With": "XMLHttpRequest",
+                            "Origin": None,
                             "Referer": "https://twitter.com/{}/following".format(username),
                             }
         return data
     #
-    def get_following(self, username, min_position=None):
-        if not min_position:
-            min_position = self.get_min_position(username)
-        data = self.prepare_data(username)     
-        url = self.get_following_url.format(username, min_position)
+
+
+
+    def get_following(self, username, minPositionInput=None, mode=0):
+        self.m_mode = mode
+        data = self.prepare_data(username)
+
+        if mode == 1:
+            if not minPositionInput:
+                min_position = self.get_min_position(username)
+            else:
+                min_position = minPositionInput
+            if min_position == 0:
+                return []
+            url = self.get_following_url.format(username, min_position)
+
+        else:
+            url = self.get_following_url_0.format(username)
+
         following_resp = self.requests_manager.make_request(url, headers=data["headers"])
-        print(following_resp)
+
+        # print("-=-=--=----------Following_resp part-----------------------------------=-=2")
         if following_resp.status_code == 200:
             following_json = following_resp.json()
+            # print(following_json);
+            # print("json-2332323232222-----------------------------")
             following = self.parse_following(following_json)
             return following
         return []

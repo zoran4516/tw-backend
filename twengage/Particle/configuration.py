@@ -24,7 +24,9 @@ class Configuration(object):
     # Data Url
     get_tweets_url = "https://twitter.com/i/profiles/show/{}/timeline/tweets?include_available_features=1&include_entities=1&max_position={}&reset_error_state=false"
     get_followers_url = "https://twitter.com/{}/followers/users?include_available_features=1&include_entities=1&lang=en&max_position={}&reset_error_state=false"
+    get_followers_url_0 = "https://twitter.com/{}/followers/users?include_available_features=1&include_entities=1&lang=en&reset_error_state=false"
     get_following_url = "https://twitter.com/{}/following/users?include_available_features=1&include_entities=1&lang=en&max_position={}&reset_error_state=false"
+    get_following_url_0 = "https://twitter.com/{}/following/users?include_available_features=1&include_entities=1&lang=en&reset_error_state=false"
     get_hashtags_url = "https://twitter.com/i/search/timeline?vertical=news&q=%23{}&src=hash&include_available_features=1&include_entities=1&max_position={}&reset_error_state=false"
     get_user_data_url = "https://twitter.com/i/profiles/popup?user_id={}&wants_hovercard=true&_={}"
     #
